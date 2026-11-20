@@ -1,295 +1,359 @@
-import { useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
 import Lenis from 'lenis';
-import { createScene } from './scene.js';
-import { person, intro, research, interests, experience, projects, community, education, timeline } from './content.js';
+import { person, ticker, stats, work, research, experience, teaching, credentials, journey } from './content.js';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
+const Lanyard = lazy(() => import('./Lanyard.jsx'));
 
 const reduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const mobileQuery = typeof window !== 'undefined' && window.matchMedia('(max-width: 760px)').matches;
+const canDo3D = typeof window !== 'undefined' && !reduced && window.matchMedia('(min-width: 900px) and (pointer: fine)').matches;
 
-// Scrambles into the final text once, like a value resolving on a terminal.
-function Resolve({ text, delay = 0 }) {
-  const [out, setOut] = useState(reduced ? text : text.replace(/[^\s·]/g, '·'));
-  useEffect(() => {
-    if (reduced) return;
-    const glyphs = 'abcdefghijklmnopqrstuvwxyz0123456789/:*';
-    let raf;
-    const start = performance.now();
-    const duration = 900;
-    const tick = () => {
-      const k = (performance.now() - start - delay) / duration;
-      if (k >= 1) { setOut(text); return; }
-      if (k >= 0) {
-        const done = Math.floor(k * text.length);
-        setOut(text.split('').map((c, i) => (i < done || c === ' ' || c === '·' ? c : glyphs[(Math.random() * glyphs.length) | 0])).join(''));
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    const safety = setTimeout(() => setOut(text), delay + duration + 400);
-    return () => { cancelAnimationFrame(raf); clearTimeout(safety); };
-  }, [text, delay]);
-  return <span aria-label={text}><span aria-hidden="true">{out}</span></span>;
-}
-
-const Arrow = () => (
-  <svg viewBox="0 0 16 16" aria-hidden="true" className="ico"><path d="M4 12 12 4M6 4h6v6" /></svg>
+const Arrow = ({ d = 'ne' }) => (
+  <svg viewBox="0 0 16 16" className="ico" aria-hidden="true">
+    {d === 'ne' ? <path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6" /> : <path d="M8 3v10M3.5 8.5 8 13l4.5-4.5" />}
+  </svg>
 );
 
+function StaticBadge() {
+  return (
+    <div className="badge-static" aria-hidden="true">
+      <span className="badge-strap" />
+      <div className="badge-card">
+        <div className="badge-top"><b>PHD APPLICANT</b><span>FALL 2027 · COMPUTER SCIENCE</span></div>
+        <img src={person.photo} alt="" width="160" height="160" />
+        <strong>Abhishek<br />Tiwari</strong>
+        <em>Cloud &amp; edge systems security</em>
+        <div className="badge-foot">abhishek572003.github.io</div>
+      </div>
+    </div>
+  );
+}
+
+function Art({ kind }) {
+  if (kind === 'ctf') return (
+    <div className="art art-ctf" aria-hidden="true">
+      <pre>{`$ nc cyberstorm.siesgst 1337
+> challenge 04 · web
+> hint: check the cookie
+$ curl -b "role=admin" /vault
+flag{st0rm_ch4s3r_2025}
+✓ +300 points · rank #3`}</pre>
+    </div>
+  );
+  if (kind === 'arch') return (
+    <svg className="art art-arch" viewBox="0 0 520 300" aria-hidden="true">
+      <g className="a-lines">
+        <path d="M70 150h70M220 150h60M360 150h60M250 150V70h40M250 150v80h40" />
+      </g>
+      {[['Users', 30, 130, 80], ['ALB', 140, 130, 80], ['ECS Fargate', 280, 130, 120], ['RDS', 420, 130, 70], ['Cognito', 290, 50, 100], ['CloudWatch', 290, 210, 110]].map(([t, x, y, w]) => (
+        <g key={t} className={t === 'ECS Fargate' ? 'a-node hot' : 'a-node'}>
+          <rect x={x} y={y} width={w} height="40" rx="10" />
+          <text x={x + w / 2} y={y + 25} textAnchor="middle">{t}</text>
+        </g>
+      ))}
+      <text x="30" y="285" className="a-cap">tenant A · tenant B · tenant C</text>
+    </svg>
+  );
+  return (
+    <div className="art art-vr" aria-hidden="true">
+      <div className="vr-ring r1" /><div className="vr-ring r2" /><div className="vr-ring r3" />
+      <span>360°</span>
+    </div>
+  );
+}
+
+function Count({ value, suffix, decimals = 0 }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (reduced) { el.textContent = value.toFixed(decimals) + suffix; return; }
+    const o = { v: 0 };
+    const st = ScrollTrigger.create({
+      trigger: el, start: 'top 90%', once: true,
+      onEnter: () => gsap.to(o, { v: value, duration: 1.6, ease: 'expo.out', onUpdate: () => { el.textContent = o.v.toFixed(decimals) + suffix; } }),
+    });
+    return () => st.kill();
+  }, [value, suffix, decimals]);
+  return <span ref={ref}>{(0).toFixed(decimals)}{suffix}</span>;
+}
+
 export default function App() {
-  const canvasRef = useRef(null);
-  const labelsRef = useRef(null);
-  const stageRef = useRef(null);
-  const rootRef = useRef(null);
+  const root = useRef(null);
+  const [badgeReady, setBadgeReady] = useState(false);
 
   useEffect(() => {
-    const sceneApi = createScene(canvasRef.current, labelsRef.current, { mobile: mobileQuery, reducedMotion: reduced });
-
     let lenis;
     if (!reduced) {
-      lenis = new Lenis({ duration: 1.15, smoothWheel: true });
+      lenis = new Lenis({ duration: 1.1, smoothWheel: true });
       lenis.on('scroll', ScrollTrigger.update);
-      gsap.ticker.add((t) => lenis.raf(t * 1000));
+      const raf = (t) => lenis.raf(t * 1000);
+      gsap.ticker.add(raf);
       gsap.ticker.lagSmoothing(0);
-      document.querySelectorAll('a[href^="#"]').forEach((a) =>
-        a.addEventListener('click', (e) => { const id = a.getAttribute('href'); if (id.length > 1) { e.preventDefault(); lenis.scrollTo(id, { offset: -10 }); history.replaceState(null, '', id); } })
-      );
+      document.querySelectorAll('a[href^="#"]').forEach((a) => a.addEventListener('click', (e) => {
+        const id = a.getAttribute('href');
+        if (id.length > 1) { e.preventDefault(); lenis.scrollTo(id, { offset: -20 }); history.replaceState(null, '', id); }
+      }));
     }
 
     const ctx = gsap.context(() => {
-      // camera + red path follow the pinned stage
-      ScrollTrigger.create({
-        trigger: stageRef.current,
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: true,
-        onUpdate: (st) => {
-          const p = st.progress;
-          sceneApi.setProgress(gsap.utils.clamp(0, 1, p / 0.62), gsap.utils.clamp(0, 1, (p - 0.38) / 0.2));
-        },
+      // header changes contrast to match the band underneath
+      document.querySelectorAll('[data-theme]').forEach((sec) => {
+        ScrollTrigger.create({
+          trigger: sec, start: 'top 40px', end: 'bottom 40px',
+          onToggle: (s) => s.isActive && document.documentElement.setAttribute('data-nav', sec.dataset.theme),
+        });
       });
-      // the model fades out once the reader reaches the written sections
+      if (reduced) return;
+
+      const h = new SplitText('.hero-title', { type: 'lines,words', linesClass: 'hl', mask: 'lines' });
+      gsap.from(h.words, { yPercent: 115, duration: 1.15, ease: 'expo.out', stagger: 0.045, delay: 0.1 });
+      gsap.from('.hero-sub > *', { opacity: 0, y: 18, duration: 1, ease: 'expo.out', stagger: 0.08, delay: 0.55 });
+
+      // ticker speeds up with scroll velocity
+      const tl = gsap.to('.ticker-track', { xPercent: -50, ease: 'none', duration: 28, repeat: -1 });
       ScrollTrigger.create({
-        trigger: '#content',
-        start: 'top 85%',
-        end: 'top 15%',
-        scrub: true,
-        onUpdate: (st) => { gsap.set('.map', { opacity: 1 - st.progress }); },
-        onLeave: () => sceneApi.setVisible(false),
-        onEnterBack: () => sceneApi.setVisible(true),
+        onUpdate: (s) => { const v = Math.min(Math.abs(s.getVelocity()) / 400, 5); gsap.to(tl, { timeScale: 1 + v, duration: 0.3, overwrite: true }); gsap.to(tl, { timeScale: 1, duration: 1, delay: 0.3 }); },
       });
 
-      if (!reduced) {
-        const split = new SplitText('.hero-name .line', { type: 'chars', charsClass: 'ch' });
-        gsap.from(split.chars, { yPercent: 110, duration: 1.1, ease: 'expo.out', stagger: 0.035, delay: 0.15 });
-        gsap.from('.hero-foot > *', { opacity: 0, y: 14, duration: 0.9, ease: 'expo.out', stagger: 0.08, delay: 0.7 });
+      gsap.utils.toArray('.rise').forEach((el) => gsap.from(el, { y: 40, opacity: 0, duration: 1.1, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 90%' } }));
+      gsap.utils.toArray('.big-title').forEach((el) => {
+        const s = new SplitText(el, { type: 'lines', linesClass: 'hl', mask: 'lines' });
+        gsap.from(s.lines, { yPercent: 105, duration: 1.1, ease: 'expo.out', stagger: 0.08, scrollTrigger: { trigger: el, start: 'top 88%' } });
+      });
+      gsap.utils.toArray('.card-media img').forEach((img) => gsap.fromTo(img, { yPercent: -6 }, { yPercent: 6, ease: 'none', scrollTrigger: { trigger: img, scrub: true } }));
+      gsap.from('.polaroid', { y: 80, opacity: 0, duration: 1.2, ease: 'expo.out', stagger: 0.12, scrollTrigger: { trigger: '.polaroids', start: 'top 85%' } });
+      gsap.from('.j-item', { y: 30, opacity: 0, duration: 0.9, ease: 'expo.out', stagger: 0.07, scrollTrigger: { trigger: '.journey-list', start: 'top 85%' } });
+    }, root);
 
-        gsap.timeline({ scrollTrigger: { trigger: stageRef.current, start: '30% top', end: '50% top', scrub: true } })
-          .to('.hero', { opacity: 0, y: -60, ease: 'none' }, 0);
-        gsap.fromTo('.q-panel', { opacity: 0, y: 40 }, { opacity: 1, y: 0, ease: 'none', scrollTrigger: { trigger: stageRef.current, start: '40% top', end: '55% top', scrub: true } });
+    // magnetic buttons
+    const mags = [...document.querySelectorAll('.magnet')];
+    const onMove = (e) => mags.forEach((m) => {
+      const r = m.getBoundingClientRect(); const x = e.clientX - (r.left + r.width / 2), y = e.clientY - (r.top + r.height / 2);
+      const near = Math.hypot(x, y) < 110;
+      gsap.to(m, { x: near ? x * 0.22 : 0, y: near ? y * 0.3 : 0, duration: 0.5, ease: 'expo.out' });
+    });
+    if (!reduced) window.addEventListener('pointermove', onMove, { passive: true });
 
-        gsap.utils.toArray('.reveal').forEach((el) => {
-          gsap.from(el, { opacity: 0, y: 28, duration: 1, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
-        });
-        gsap.utils.toArray('.sec-title').forEach((el) => {
-          const s = new SplitText(el, { type: 'lines', linesClass: 'ln', mask: 'lines' });
-          gsap.from(s.lines, { yPercent: 100, duration: 1.1, ease: 'expo.out', stagger: 0.08, scrollTrigger: { trigger: el, start: 'top 85%' } });
-        });
-      }
-    }, rootRef);
-
-    const bar = document.querySelector('.bar');
-    const onScroll = () => bar.classList.toggle('solid', window.scrollY > 40);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-
-    const onMove = (e) => sceneApi.setPointer((e.clientX / innerWidth) * 2 - 1, (e.clientY / innerHeight) * 2 - 1);
-    window.addEventListener('pointermove', onMove, { passive: true });
-
-    return () => { ctx.revert(); lenis?.destroy(); window.removeEventListener('pointermove', onMove); window.removeEventListener('scroll', onScroll); sceneApi.dispose(); };
+    return () => { ctx.revert(); lenis?.destroy(); window.removeEventListener('pointermove', onMove); };
   }, []);
 
   return (
-    <div ref={rootRef}>
-      <div className="map" aria-hidden="true">
-        <canvas ref={canvasRef} />
-        <div className="map-labels" ref={labelsRef} />
-      </div>
-
-      <header className="bar">
-        <a href="#top" className="bar-name">{person.name}</a>
+    <div ref={root}>
+      <a className="skip" href="#work">Skip to work</a>
+      <header className="nav">
+        <a href="#top" className="nav-mark" aria-label="Back to top">AT</a>
         <nav aria-label="Sections">
-          <a href="#research">Research</a>
           <a href="#work">Work</a>
-          <a href="#projects">Projects</a>
+          <a href="#research">Research</a>
+          <a href="#teaching">Teaching</a>
           <a href="#contact">Contact</a>
-          <a href={person.cv} className="bar-cv">CV <Arrow /></a>
         </nav>
+        <a className="nav-cv" href={person.cv}>CV <Arrow /></a>
       </header>
 
       <main id="top">
-        <section className="stage" ref={stageRef}>
-          <div className="stage-sticky">
-            <div className="hero">
-              <h1 className="hero-name">
-                <span className="line">{person.first}</span>
-                <span className="line">{person.last}</span>
-              </h1>
-              <div className="hero-foot">
-                <p className="hero-role"><Resolve text={person.role} delay={500} /></p>
-                <p className="hero-status">{person.status} · {person.location}</p>
-                <div className="hero-actions">
-                  <a className="btn btn-solid" href={`mailto:${person.email}`}>Email me</a>
-                  <a className="btn" href={person.cv}>Read the CV <Arrow /></a>
-                </div>
+        {/* HERO */}
+        <section className="hero" data-theme="blue">
+          <div className="hero-copy">
+            <p className="chip"><span className="live" aria-hidden="true" />{person.status}</p>
+            <h1 className="hero-title">
+              {person.headline.map((l, i) => <span key={i} className={i === 3 ? 'hl-last' : ''}>{l} </span>)}
+            </h1>
+            <div className="hero-sub">
+              <p>{person.intro}</p>
+              <div className="hero-actions">
+                <a className="btn btn-lime magnet" href={`mailto:${person.email}`}>Email me</a>
+                <a className="btn btn-ghost magnet" href={person.cv}>Read my CV <Arrow /></a>
               </div>
-              <p className="scroll-cue">Scroll: follow one misconfigured path through the system</p>
+              <ul className="hero-links">
+                <li><a href={person.github}>GitHub <Arrow /></a></li>
+                <li><a href={person.linkedin}>LinkedIn <Arrow /></a></li>
+                <li><span>{person.location}</span></li>
+              </ul>
             </div>
-
-            <div className="q-panel" id="research">
-              <p className="q-tag"><span className="dot-red" aria-hidden="true" /> Current study · open research notebook</p>
-              <h2 className="q-title">{research.question}</h2>
-              <p className="q-context">{research.context}</p>
-              <p className="q-caption">The red path in the model is an illustration of the kind of change being measured, not real data.</p>
-            </div>
+          </div>
+          <div className="hero-badge">
+            {canDo3D ? (
+              <>
+                {!badgeReady && <StaticBadge />}
+                <div className={'lanyard' + (badgeReady ? ' on' : '')}>
+                  <Suspense fallback={null}><Lanyard photo={person.photo} onReady={() => setBadgeReady(true)} /></Suspense>
+                </div>
+                <p className="drag-hint">drag the badge</p>
+              </>
+            ) : <StaticBadge />}
           </div>
         </section>
 
-        <div id="content" className="content">
-          <section className="sec notebook">
-            <div className="sec-head">
-              <h2 className="sec-title">How the study works</h2>
-            </div>
-            <p className="ctx-mobile">{research.context}</p>
-            <ol className="method">
-              {research.method.map(([k, t]) => (
-                <li key={k} className="reveal"><b>{k}</b><span>{t}</span></li>
-              ))}
-            </ol>
-            <ol className="log">
-              {research.log.map((l, i) => (
-                <li key={i} className={'reveal' + (l.next ? ' next' : '')}><time>{l.date}</time><span>{l.text}</span></li>
-              ))}
-            </ol>
-            <p className="log-note reveal">{research.note}</p>
-          </section>
-
-          <section className="sec about">
-            <div className="about-grid">
-              <img className="portrait reveal" src={person.photo} alt={`Portrait of ${person.name}`} width="400" height="400" loading="lazy" />
-              <p className="about-text reveal">{intro}</p>
-            </div>
-          </section>
-
-          <section className="sec" id="interests">
-            <div className="sec-head"><h2 className="sec-title">What I study, layer by layer</h2></div>
-            <ul className="interests">
-              {interests.map((it) => (
-                <li key={it.title} className="reveal">
-                  <span className="layer">{it.layer}</span>
-                  <h3>{it.title}</h3>
-                  <p>{it.text}</p>
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          <section className="sec" id="work">
-            <div className="sec-head"><h2 className="sec-title">Work</h2></div>
-            <ul className="rows">
-              {experience.map((e) => (
-                <li key={e.role} className="row reveal">
-                  <span className="when">{e.when}</span>
-                  <div>
-                    <h3>{e.role}</h3>
-                    <p className="org">{e.org} · {e.place}</p>
-                    <p>{e.text}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          <section className="sec" id="projects">
-            <div className="sec-head"><h2 className="sec-title">Projects</h2></div>
-            <ul className="projects">
-              {projects.map((p) => {
-                const Tag = p.link ? 'a' : 'div';
-                return (
-                  <li key={p.name} className="reveal">
-                    <Tag className="proj" {...(p.link ? { href: p.link, target: '_blank', rel: 'noreferrer' } : {})}>
-                      <span className="proj-year">{p.year}</span>
-                      <span className="proj-name">{p.name}{p.link && <Arrow />}</span>
-                      <span className="proj-kind">{p.kind}</span>
-                      <span className="proj-text">{p.text}</span>
-                    </Tag>
-                  </li>
-                );
-              })}
-            </ul>
-          </section>
-
-          <section className="sec" id="community">
-            <div className="sec-head"><h2 className="sec-title">Teaching and community</h2></div>
-            <ul className="rows">
-              {community.map((c) => (
-                <li key={c.role} className="row reveal">
-                  <span className="when">{c.when}</span>
-                  <div>
-                    <h3>{c.role}</h3>
-                    <p className="org">{c.org}</p>
-                    <p>{c.text}</p>
-                  </div>
-                  {c.figure && <span className="figure"><b>{c.figure}</b>{c.figureLabel}</span>}
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          <section className="sec" id="education">
-            <div className="sec-head"><h2 className="sec-title">Education</h2></div>
-            <div className="edu reveal">
-              <span className="when">{education.when}</span>
-              <div>
-                <h3>{education.degree}</h3>
-                <p className="org">{education.school}</p>
-                <p>{education.spec}</p>
-                <p className="edu-grade"><b>{education.grade}</b> · {education.trend}</p>
-                <p className="muted">{education.coursework}</p>
-                <ul className="certs">{education.certs.map((c) => <li key={c}>{c}</li>)}</ul>
-              </div>
-            </div>
-          </section>
-
-          <section className="sec" id="timeline">
-            <div className="sec-head"><h2 className="sec-title">Timeline</h2></div>
-            <ol className="tl">
-              {timeline.map(([y, t, now], i) => (
-                <li key={i} className={'reveal' + (now ? ' now' : '')}>
-                  <span className="tl-y">{i === 0 || timeline[i - 1][0] !== y ? y : ''}</span>
-                  <span className="tl-t">{t}</span>
-                </li>
-              ))}
-            </ol>
-          </section>
-
-          <section className="sec close" id="contact">
-            <h2 className="close-title sec-title">If this overlaps with your lab or team, I would like to hear from you.</h2>
-            <a className="close-mail" href={`mailto:${person.email}`}>{person.email}</a>
-            <div className="close-links">
-              <a href={person.cv}>CV (PDF) <Arrow /></a>
-              <a href={person.github}>GitHub <Arrow /></a>
-              <a href={person.linkedin}>LinkedIn <Arrow /></a>
-            </div>
-            <p className="now-line"><span className="dot-live" aria-hidden="true" /> Now: {person.now}</p>
-          </section>
-
-          <footer className="foot">© 2026 {person.name} · {person.location}</footer>
+        {/* TICKER */}
+        <div className="ticker" aria-hidden="true">
+          <div className="ticker-track">
+            {[0, 1].map((k) => <div key={k} className="ticker-row">{ticker.map((t) => <span key={t + k}>{t}<i>✳</i></span>)}</div>)}
+          </div>
         </div>
+
+        {/* STATS */}
+        <section className="stats" data-theme="paper" aria-label="In numbers">
+          {stats.map((s) => (
+            <div key={s.label} className="stat rise">
+              <b><Count value={s.value} suffix={s.suffix} decimals={s.decimals} /></b>
+              <span>{s.label}</span>
+            </div>
+          ))}
+        </section>
+
+        {/* WORK */}
+        <section className="work" id="work" data-theme="paper">
+          <div className="sec-top">
+            <h2 className="big-title">Selected work</h2>
+            <p className="sec-note rise">Things I built, shipped or led. Click any card to see it live or read the code.</p>
+          </div>
+          <div className="work-grid">
+            {work.map((w, i) => {
+              const primary = w.links?.[0]?.[1];
+              return (
+                <article key={w.name} className={`card rise c${i}` + (w.tall ? ' tall' : '')}>
+                  <a className="card-media" href={primary || undefined} target={primary ? '_blank' : undefined} rel="noreferrer" tabIndex={primary ? 0 : -1} aria-label={primary ? `Open ${w.name}` : undefined}>
+                    {w.img ? (
+                      <div className={w.tall ? 'photo' : 'browser'}>
+                        {!w.tall && <div className="browser-bar"><i /><i /><i /><span>{new URL(primary).host}</span></div>}
+                        <img src={w.img} alt={`${w.name} screenshot`} loading="lazy" />
+                      </div>
+                    ) : <Art kind={w.art} />}
+                  </a>
+                  <div className="card-body">
+                    <div className="card-meta"><span className="tag">{w.tag}</span><span>{w.year}</span></div>
+                    <h3>{w.name}</h3>
+                    <p>{w.what}</p>
+                    <ul className="stack">{w.stack.map((s) => <li key={s}>{s}</li>)}</ul>
+                    {w.links && <div className="card-links">{w.links.map(([t, u]) => <a key={u} href={u} target="_blank" rel="noreferrer">{t} <Arrow /></a>)}</div>}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* RESEARCH */}
+        <section className="research" id="research" data-theme="lime">
+          <h2 className="big-title">{research.title}</h2>
+          <div className="research-grid">
+            <div>
+              <p className="research-lead rise">{research.lead}</p>
+              <ul className="areas rise">{research.areas.map((a) => <li key={a}>{a}</li>)}</ul>
+            </div>
+            <aside className="now-card rise">
+              <p className="now-label"><span className="live dark" aria-hidden="true" />{research.now.label}</p>
+              <p className="now-text">{research.now.text}</p>
+              <p className="now-status">{research.now.status}</p>
+            </aside>
+          </div>
+        </section>
+
+        {/* EXPERIENCE */}
+        <section className="exp" id="experience" data-theme="paper">
+          <h2 className="big-title">Experience</h2>
+          <ol className="exp-list">
+            {experience.map((e) => {
+              const Org = e.url ? 'a' : 'span';
+              return (
+                <li key={e.role} className="exp-row rise">
+                  <span className="exp-when">{e.when}</span>
+                  <div className="exp-main">
+                    <h3>{e.role}</h3>
+                    <Org className="exp-org" {...(e.url ? { href: e.url, target: '_blank', rel: 'noreferrer' } : {})}>{e.org}{e.url && <Arrow />}</Org>
+                  </div>
+                  <p>{e.text}</p>
+                </li>
+              );
+            })}
+          </ol>
+        </section>
+
+        {/* TEACHING */}
+        <section className="teach" id="teaching" data-theme="ink">
+          <div className="teach-top">
+            <h2 className="big-title">{teaching.title}</h2>
+            <p className="rise">{teaching.text}</p>
+          </div>
+          <div className="polaroids">
+            {teaching.photos.map((p, i) => (
+              <a key={p.img} className={'polaroid p' + i} href={p.href} target="_blank" rel="noreferrer">
+                <img src={p.img} alt={p.caption} loading="lazy" />
+                <span>{p.caption} <Arrow /></span>
+              </a>
+            ))}
+          </div>
+          <ul className="roles">
+            {teaching.roles.map((r) => (
+              <li key={r.role} className="rise">
+                <span className="exp-when">{r.when}</span>
+                <a href={r.href} target="_blank" rel="noreferrer"><h3>{r.role} <Arrow /></h3></a>
+                <span className="role-org">{r.org}</span>
+                <p>{r.text}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/* CREDENTIALS */}
+        <section className="creds" id="education" data-theme="paper">
+          <h2 className="big-title">Education &amp; certifications</h2>
+          <div className="creds-grid">
+            <a className="degree rise" href={credentials.degree.url} target="_blank" rel="noreferrer">
+              <span className="exp-when">{credentials.degree.when}</span>
+              <h3>{credentials.degree.title}</h3>
+              <p className="deg-sub">{credentials.degree.sub}</p>
+              <p className="deg-school">{credentials.degree.school} <Arrow /></p>
+              <p className="deg-grade">{credentials.degree.grade}</p>
+              <p className="deg-proj">{credentials.degree.project}</p>
+            </a>
+            <ul className="cert-list">
+              {credentials.certs.map((c) => (
+                <li key={c.name} className="cert rise">
+                  <span className="cert-by">{c.by} · {c.year}</span>
+                  <h3>{c.name}</h3>
+                  {c.href && <a href={c.href} target="_blank" rel="noreferrer">{c.verify} <Arrow /></a>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* JOURNEY */}
+        <section className="journey" data-theme="blue">
+          <h2 className="big-title">The road so far</h2>
+          <ol className="journey-list">
+            {journey.map(([y, t], i) => (
+              <li key={y} className={'j-item' + (i === journey.length - 1 ? ' next' : '')}>
+                <span className="j-year">{y}</span>
+                <span className="j-dot" aria-hidden="true" />
+                <p>{t}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        {/* CONTACT */}
+        <section className="contact" id="contact" data-theme="ink">
+          <div className="contact-inner">
+          <p className="chip chip-dark"><span className="live" aria-hidden="true" />Open to Ph.D. positions and cloud / security roles</p>
+          <h2 className="contact-title big-title">Let’s talk.</h2>
+          <a className="contact-mail magnet" href={`mailto:${person.email}`}>{person.email}</a>
+          <div className="contact-links">
+            <a className="btn btn-lime magnet" href={person.cv}>Download CV <Arrow d="down" /></a>
+            <a className="btn btn-ghost-light magnet" href={person.github}>GitHub <Arrow /></a>
+            <a className="btn btn-ghost-light magnet" href={person.linkedin}>LinkedIn <Arrow /></a>
+          </div>
+          </div>
+          <footer className="foot">
+            <span>© 2026 {person.name}</span>
+            <span>Made with React, Three.js and GSAP · hosted free on GitHub Pages</span>
+          </footer>
+        </section>
       </main>
     </div>
   );
