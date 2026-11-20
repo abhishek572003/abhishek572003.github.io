@@ -185,7 +185,7 @@ function Band({ tex }) {
 
 export default function Lanyard({ photo, onReady }) {
   const tex = useBadgeTextures(photo);
-  useEffect(() => { if (tex) onReady?.(); }, [tex, onReady]);
+  useEffect(() => { if (!tex) return; const t = setTimeout(() => onReady?.(), 1400); return () => clearTimeout(t); }, [tex, onReady]);
   return (
     <Canvas camera={{ position: [0, 0, 13], fov: 25 }} gl={{ alpha: true, antialias: true }} dpr={[1, 2]} style={{ background: 'transparent' }}>
       <ambientLight intensity={Math.PI} />
