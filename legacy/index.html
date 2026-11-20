@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Abhishek Sunil Tiwari</title>
+<meta name="description" content="Abhishek Sunil Tiwari — prospective Ph.D. student in computer science, working on the security and resilience of cloud-native and edge systems.">
+<meta property="og:title" content="Abhishek Sunil Tiwari">
+<meta property="og:description" content="Prospective Ph.D. student — cloud and edge systems security.">
+<meta property="og:image" content="assets/abhishek.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f6f3ec; --paper-2:#efeadf; --ink:#1c1b18; --ink-2:#4a463e; --ink-3:#6f695d;
+  --rule:#d9d2c3; --accent:#b4381f; --accent-ink:#8f2a15;
+  --serif:"Newsreader", Georgia, serif; --mono:"IBM Plex Mono", ui-monospace, monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth; -webkit-text-size-adjust:100%}
+body{margin:0; background:var(--paper); color:var(--ink); font-family:var(--serif); font-size:19px; line-height:1.55; font-optical-sizing:auto; text-rendering:optimizeLegibility}
+::selection{background:var(--accent); color:var(--paper)}
+a{color:var(--ink); text-decoration-line:underline; text-decoration-color:var(--rule); text-decoration-thickness:1px; text-underline-offset:.22em; transition:text-decoration-color .2s, color .2s}
+a:hover{color:var(--accent-ink); text-decoration-color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:2px}
+html{scrollbar-color:var(--rule) var(--paper)}
+
+.wrap{max-width:1120px; margin:0 auto; padding:0 32px; display:grid; grid-template-columns:300px 1fr; gap:72px}
+aside{position:sticky; top:0; align-self:start; height:100vh; padding:64px 0 40px; display:flex; flex-direction:column}
+.portrait{width:112px; height:112px; border-radius:50%; object-fit:cover; display:block; margin-bottom:28px; filter:saturate(.85) contrast(1.02); box-shadow:0 6px 18px -8px rgba(28,27,24,.35)}
+h1{font-weight:500; font-size:2.35rem; line-height:1.04; letter-spacing:-.02em; margin:0 0 14px; text-wrap:balance}
+.role{color:var(--ink-2); font-size:1.02rem; line-height:1.45; margin:0 0 28px}
+.links{list-style:none; padding:0; margin:0 0 32px; display:grid; gap:9px; font-size:.98rem}
+.links a{display:inline-flex; align-items:center; gap:10px; text-decoration:none}
+.links svg{width:17px; height:17px; stroke:currentColor; fill:none; stroke-width:1.6; flex:none}
+nav.toc{margin-top:auto; font-family:var(--mono); font-size:.74rem; letter-spacing:.02em}
+nav.toc a{display:block; padding:5px 0 5px 14px; text-decoration:none; color:var(--ink-3); border-left:1px solid var(--rule); transition:color .25s, border-color .25s}
+nav.toc a.on{color:var(--ink); border-left-color:var(--ink)}
+
+main{padding:64px 0 120px; min-width:0}
+section{padding-top:8px; margin-bottom:84px; scroll-margin-top:40px}
+h2{font-weight:500; font-size:1.65rem; letter-spacing:-.01em; margin:0 0 22px; padding-bottom:10px; border-bottom:1px solid var(--rule)}
+p{margin:0 0 1em; max-width:68ch}
+.lede{font-size:1.42rem; line-height:1.45; font-weight:400; letter-spacing:-.005em; max-width:34ch; margin-bottom:1.1em; text-wrap:pretty}
+.lede em{font-style:italic; color:var(--accent-ink)}
+.muted{color:var(--ink-2)}
+
+.interests{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:0 40px}
+.interests li{padding:14px 0; border-bottom:1px solid var(--rule)}
+.interests b{display:block; font-weight:600; font-size:1.02rem}
+.interests span{color:var(--ink-2); font-size:.95rem}
+
+.entry{display:grid; grid-template-columns:150px 1fr; gap:24px; padding:18px 0; border-bottom:1px solid var(--rule)}
+.entry:last-child{border-bottom:0}
+.when{font-family:var(--mono); font-size:.78rem; color:var(--ink-3); padding-top:5px; font-variant-numeric:tabular-nums}
+.entry h3{font-size:1.12rem; font-weight:600; margin:0 0 2px; line-height:1.3}
+.entry .where{font-style:italic; color:var(--ink-2); margin:0 0 8px; font-size:.98rem}
+.entry ul{margin:6px 0 0; padding-left:1.1em}
+.entry li{margin:3px 0; max-width:64ch; color:var(--ink)}
+.entry li::marker{color:var(--ink-3)}
+.tag{font-family:var(--mono); font-size:.7rem; color:var(--ink-3); margin-left:6px; white-space:nowrap}
+
+/* Timeline: the one authored motion — the ink line draws as you read */
+.timeline{position:relative; margin:8px 0 0; padding:0; list-style:none}
+.timeline::before, .timeline .ink{content:""; position:absolute; left:91px; top:6px; bottom:6px; width:1px; background:var(--rule)}
+.timeline .ink{background:var(--ink); transform-origin:top; transform:scaleY(var(--p,0)); transition:transform .12s linear}
+.timeline ol{list-style:none; margin:0; padding:0}
+.timeline li{position:relative; display:grid; grid-template-columns:72px 1fr; gap:40px; padding:9px 0}
+.timeline .y{font-family:var(--mono); font-size:.78rem; color:var(--ink-3); text-align:right; padding-top:4px; font-variant-numeric:tabular-nums}
+.timeline .dot{position:absolute; left:87px; top:16px; width:9px; height:9px; border-radius:50%; background:var(--paper); border:1px solid var(--ink-3); transition:background .4s, border-color .4s, box-shadow .4s}
+.timeline li.lit .dot{background:var(--ink); border-color:var(--ink)}
+.timeline li.now .dot{background:var(--accent); border-color:var(--accent); box-shadow:0 0 0 5px rgba(180,56,31,.14)}
+.timeline .t{font-size:1rem; line-height:1.45}
+.timeline .t b{font-weight:600}
+.timeline .t span{color:var(--ink-2)}
+.timeline li.yr{padding-top:22px}
+
+.cvbox{display:flex; flex-wrap:wrap; align-items:baseline; gap:12px 28px}
+.btn{display:inline-flex; align-items:center; gap:10px; padding:11px 18px 12px; border:1px solid var(--ink); color:var(--ink); text-decoration:none; font-size:1rem; border-radius:2px; transition:background .2s, color .2s}
+.btn:hover{background:var(--ink); color:var(--paper)}
+.btn svg{width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:1.7}
+footer{font-family:var(--mono); font-size:.72rem; color:var(--ink-3); padding-top:24px; border-top:1px solid var(--rule)}
+
+@media (max-width:900px){
+  body{font-size:18px}
+  .wrap{grid-template-columns:1fr; gap:0; padding:0 20px}
+  aside{position:static; height:auto; padding:40px 0 8px}
+  nav.toc{display:none}
+  h1{font-size:2.1rem}
+  main{padding-top:24px}
+  section{margin-bottom:64px}
+  .interests{grid-template-columns:1fr}
+  .entry{grid-template-columns:1fr; gap:4px}
+  .lede{font-size:1.25rem}
+  .timeline::before,.timeline .ink{left:63px}
+  .timeline .dot{left:59px}
+  .timeline li{grid-template-columns:48px 1fr; gap:34px}
+}
+@media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} .timeline .ink{transition:none} }
+
+/* Now block */
+.now{margin:0 0 30px; padding:14px 0 0; border-top:1px solid var(--rule); font-size:.92rem; color:var(--ink-2); line-height:1.45}
+.now b{display:block; font-family:var(--mono); font-weight:500; font-size:.7rem; letter-spacing:.04em; color:var(--accent-ink); margin-bottom:6px}
+.now .pulse{display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--accent); margin-right:7px; vertical-align:1px; animation:pulse 2.4s ease-out infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(180,56,31,.35)}70%{box-shadow:0 0 0 7px rgba(180,56,31,0)}100%{box-shadow:0 0 0 0 rgba(180,56,31,0)}}
+
+/* Current research: open notebook */
+.rq{font-size:1.28rem; line-height:1.42; margin:0 0 26px; max-width:40ch; text-wrap:balance}
+.pipe{list-style:none; margin:0 0 30px; padding:0; display:grid; grid-template-columns:repeat(4,1fr); counter-reset:s; border:1px solid var(--rule); background:var(--paper-2)}
+.pipe li{position:relative; padding:16px 16px 18px; border-right:1px solid var(--rule); counter-increment:s}
+.pipe li:last-child{border-right:0}
+.pipe li::before{content:counter(s); font-family:var(--mono); font-size:.7rem; color:var(--ink-3); display:block; margin-bottom:8px}
+.pipe li:not(:last-child)::after{content:""; position:absolute; right:-6px; top:50%; width:10px; height:10px; background:var(--paper-2); border-top:1px solid var(--ink-3); border-right:1px solid var(--ink-3); transform:translateY(-50%) rotate(45deg); z-index:1}
+.pipe b{display:block; font-size:1rem; font-weight:600; line-height:1.3; margin-bottom:4px}
+.pipe span{font-size:.88rem; color:var(--ink-2); line-height:1.4; display:block}
+.pipe code{font-family:var(--mono); font-size:.78rem}
+.log{list-style:none; margin:0; padding:0; border-top:1px solid var(--rule)}
+.log li{display:grid; grid-template-columns:150px 1fr; gap:24px; padding:11px 0; border-bottom:1px solid var(--rule); font-size:.98rem}
+.log time{font-family:var(--mono); font-size:.76rem; color:var(--ink-3); padding-top:3px; font-variant-numeric:tabular-nums}
+.log .next time{color:var(--accent-ink)}
+.note{font-size:.9rem; color:var(--ink-3); margin-top:14px}
+@media (max-width:900px){
+  .pipe{grid-template-columns:1fr}
+  .pipe li{border-right:0; border-bottom:1px solid var(--rule)}
+  .pipe li:last-child{border-bottom:0}
+  .pipe li:not(:last-child)::after{right:auto; left:24px; top:auto; bottom:-6px; transform:rotate(135deg)}
+  .log li{grid-template-columns:1fr; gap:2px}
+}
+@media print{
+  aside{position:static; height:auto} nav.toc,.now .pulse{display:none}
+  .wrap{display:block} body{font-size:11pt; background:#fff} section{margin-bottom:24px; break-inside:avoid-page}
+  .timeline .ink{transform:scaleY(1)} .timeline li .dot{background:var(--ink)}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <aside>
+    <img class="portrait" src="assets/abhishek.jpg" alt="Portrait of Abhishek Sunil Tiwari" width="112" height="112">
+    <h1>Abhishek Sunil Tiwari</h1>
+    <p class="role">Prospective Ph.D. student in Computer Science. Analyst at Capgemini, Mumbai.</p>
+    <ul class="links">
+      <li><a href="mailto:abhishekst5703@gmail.com"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="m3.5 6 8.5 7 8.5-7"/></svg>abhishekst5703@gmail.com</a></li>
+      <li><a href="assets/Abhishek_Tiwari_Academic_CV.pdf"><svg viewBox="0 0 24 24"><path d="M14 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>Curriculum vitae (PDF)</a></li>
+      <li><a href="https://github.com/abhishek572003"><svg viewBox="0 0 24 24"><path d="M9 19c-4 1.3-4-2-6-2.5M15 21v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1-.3-3.4 1.3a11.6 11.6 0 0 0-6.2 0C6.6 2.8 5.6 3.1 5.6 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4.2 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>github.com/abhishek572003</a></li>
+      <li><a href="https://www.linkedin.com/in/abhishek-tiwari05/"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg>LinkedIn</a></li>
+    </ul>
+    <div class="now"><b><span class="pulse" aria-hidden="true"></span>NOW · NOV 2026</b>Running a pilot study on security misconfigurations in AI-agent-written infrastructure code. Applying for Fall 2027.</div>
+    <nav class="toc" aria-label="Sections">
+      <a href="#about">About</a><a href="#research">Research</a><a href="#current">Current work</a><a href="#education">Education</a>
+      <a href="#projects">Projects</a><a href="#experience">Experience</a><a href="#teaching">Teaching</a><a href="#timeline">Timeline</a><a href="#cv">CV</a>
+    </nav>
+  </aside>
+
+  <main>
+    <section id="about">
+      <p class="lede">I study how distributed systems stay <em>trustworthy</em> when identity, policy, and telemetry are spread across many services, from the cloud down to small edge devices.</p>
+      <p>I completed my B.E. in Computer Science and Engineering (Internet of Things and Cyber Security, including Blockchain Technology) at SIES Graduate School of Technology, University of Mumbai, in 2025. I now work as an Analyst in the digital analytics practice at Capgemini.</p>
+      <p>Before that, I configured access control, TLS, and deployment pipelines for production AWS workloads and designed the infrastructure for a multi-tenant platform. That work kept raising the same question for me: when a single identity or configuration decision can affect both security and availability, how do we detect when something has gone wrong? I am applying to Ph.D. programs for Fall 2027 to study this question with the rigor of research.</p>
+    </section>
+
+    <section id="research">
+      <h2>Research interests</h2>
+      <ul class="interests">
+        <li><b>Workload identity and access control</b><span>Service identity and least privilege in containerized and serverless platforms.</span></li>
+        <li><b>Misconfiguration and policy drift</b><span>How infrastructure-as-code and cluster settings drift into insecure states.</span></li>
+        <li><b>Telemetry-driven detection</b><span>Correlating flows, deployment events, and traces to find credential misuse and lateral movement.</span></li>
+        <li><b>Adaptive learning at the edge</b><span>Continual anomaly detection for cloud-connected IoT under tight resource limits.</span></li>
+      </ul>
+    </section>
+
+    <section id="current">
+      <h2>Current work: an open research notebook</h2>
+      <p class="rq">Do AI coding agents introduce more cloud security misconfigurations than people do when they change infrastructure code?</p>
+      <p>Coding agents such as Claude Code, Copilot, Codex, and Devin now open a growing share of pull requests on GitHub, including changes to Terraform and Kubernetes files that decide who can reach what. Recent work compared agent and human infrastructure changes for maintainability, but not for security. I am measuring that gap.</p>
+      <ol class="pipe" aria-label="Method">
+        <li><b>Find pull requests</b><span>Agent-authored changes to <code>.tf</code> and Kubernetes YAML, each matched with human changes in the same repository.</span></li>
+        <li><b>Rebuild both versions</b><span>Every changed file at the base commit and the head commit.</span></li>
+        <li><b>Scan the difference</b><span>Checkov and KICS on both versions. Only checks that fail after the change count as introduced.</span></li>
+        <li><b>Validate and compare</b><span>Hand-label a sample for false positives, then compare matched pairs by category: IAM, network exposure, encryption, container privilege.</span></li>
+      </ol>
+      <ol class="log" aria-label="Research log">
+        <li><time datetime="2026-11-21">21 Nov 2026</time><span>Framed the question after a literature review of 13 papers. The closest prior study measured sustainability smells only.</span></li>
+        <li><time datetime="2026-11-21">21 Nov 2026</time><span>Pilot pipeline runs end to end on 9 pull requests. Too small to draw conclusions, but it showed that matching on change size is needed.</span></li>
+        <li class="next"><time>Dec 2026</time><span>Next: scale to 500+ agent pull requests and add Kubernetes manifests and a second scanner.</span></li>
+        <li class="next"><time>Feb 2027</time><span>Goal: a preprint with code and data released.</span></li>
+      </ol>
+      <p class="note">No results yet. This log is updated as the study progresses.</p>
+    </section>
+
+    <section id="education">
+      <h2>Education</h2>
+      <div class="entry">
+        <div class="when">2021 – 2025</div>
+        <div>
+          <h3>Bachelor of Engineering, Computer Science and Engineering</h3>
+          <p class="where">SIES Graduate School of Technology (Autonomous), University of Mumbai</p>
+          <ul>
+            <li>Specialization: Internet of Things and Cyber Security, including Blockchain Technology</li>
+            <li>CGPI 7.89/10. Final-year SGPI: 8.32 and 8.35.</li>
+            <li>Final-year project: VR-Based Solution for Cognitive Disorders (Autism Spectrum Disorder), advised by Dr. Sulochana Madachane</li>
+            <li>Coursework: Cryptography and Network Security, Ethical Hacking and Digital Forensics, Penetration Testing, DevSecOps, Computer Networks, Operating Systems, Edge/Fog Computing, IoT Architecture and Protocols</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects">
+      <h2>Projects</h2>
+      <div class="entry">
+        <div class="when">2023</div>
+        <div>
+          <h3>Surveillance drone prototype <span class="tag"><a href="https://github.com/abhishek572003/Surveillance-Drone">code</a></span></h3>
+          <p class="where">Edge cyber-physical platform · Semester IV team project</p>
+          <ul><li>KK2.1.5 flight controller and ESP32 camera with Python/OpenCV interfaces for autonomous-surveillance experiments.</li>
+          <li>Showed how wireless links and limited on-device compute constrain sensing and control at the edge.</li></ul>
+        </div>
+      </div>
+      <div class="entry">
+        <div class="when">2025</div>
+        <div>
+          <h3>Access control in a multi-tenant cloud platform (SearchHR)</h3>
+          <p class="where">Freelance infrastructure design</p>
+          <ul><li>Containerized deployment on ECS Fargate with Cognito, RDS, and CloudWatch.</li>
+          <li>Worked through trade-offs between tenant isolation, authentication, availability, and cost.</li></ul>
+        </div>
+      </div>
+      <div class="entry">
+        <div class="when">2025</div>
+        <div>
+          <h3>CyberStorm capture-the-flag platform <span class="tag"><a href="https://github.com/abhishek572003/cyberstorm_ctf">code</a></span></h3>
+          <p class="where">Security education</p>
+          <ul><li>Modular Django platform used to run a campus capture-the-flag event: challenges, users, and scoring.</li></ul>
+        </div>
+      </div>
+      <div class="entry">
+        <div class="when">2024</div>
+        <div>
+          <h3>Blockchain security model</h3>
+          <p class="where">Mini project, Semester VI</p>
+          <ul><li>A blockchain-based security model built in the cryptography and blockchain course sequence.</li></ul>
+        </div>
+      </div>
+      <div class="entry">
+        <div class="when">2024</div>
+        <div>
+          <h3>Cloud infrastructure work</h3>
+          <p class="where">Infrastructure as code, serverless, CI/CD</p>
+          <ul>
+            <li>Terraform and Boto3 provisioning of VPCs, subnets, and EC2, with a Lambda/API Gateway backend and Cognito authentication.</li>
+            <li>Serverless to-do application on Lambda, DynamoDB, and CloudFront with AWS SAM and GitHub Actions. <a href="https://github.com/abhishek572003/todo-app-aws">code</a></li>
+            <li>CI/CD for a containerized React–Django application with Docker, Jenkins, and Kubernetes. <a href="https://github.com/abhishek572003/react_django_demo_app">code</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="experience">
+      <h2>Experience</h2>
+      <div class="entry">
+        <div class="when">Sep 2025 – now</div>
+        <div>
+          <h3>Analyst, Digital Analytics</h3>
+          <p class="where">Capgemini, Mumbai</p>
+          <ul><li>Digital analytics and customer-data workflows with Adobe Analytics, Adobe Experience Platform, Adobe Journey Optimizer, and Google Analytics 4. Completed role-based training in Python and Microsoft Azure.</li></ul>
+        </div>
+      </div>
+      <div class="entry">
+        <div class="when">Jun – Aug 2025</div>
+        <div>
+          <h3>Cloud and DevOps Engineer (freelance)</h3>
+          <p class="where">SearchHR multi-tenant HR platform</p>
+          <ul><li>Designed the AWS architecture and delivery pipeline: CodePipeline, CodeBuild, CodeDeploy, CloudFormation.</li></ul>
+        </div>
+      </div>
+      <div class="entry">
+        <div class="when">Feb – May 2024</div>
+        <div>
+          <h3>Cloud Infrastructure Trainee</h3>
+          <p class="where">Serendib Trading and Properties LLP, Mumbai</p>
+          <ul><li>Configured IAM roles, security groups, SSL/TLS, load balancing, and backup and recovery for AWS EC2 workloads.</li>
+          <li>Diagnosed deployment issues by correlating application logs, network behaviour, and infrastructure state.</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="teaching">
+      <h2>Teaching and community</h2>
+      <div class="entry">
+        <div class="when">2023 – now</div>
+        <div>
+          <h3>Cloud Computing Lead, Google Developer Student Clubs, then GDG on Campus</h3>
+          <p class="where">SIES Graduate School of Technology · Aug 2023 – Sep 2024, then Oct 2024 – now</p>
+          <ul><li>Started the chapter's first cloud domain. Designed and taught workshops for more than 200 students on Linux, Git/GitHub, Kubernetes, serverless computing, and three-tier cloud architecture, and ran a 30-day Google Cloud bootcamp.</li>
+          <li>Co-led a cloud and web security event with hands-on capture-the-flag exercises on cloud vulnerabilities.</li></ul>
+        </div>
+      </div>
+      <div class="entry">
+        <div class="when">2024</div>
+        <div>
+          <h3>Facilitator, Google Cloud Generative AI Study Jams</h3>
+          <p class="where">SIES GST campus cohort</p>
+          <ul><li>Planned doubt-solving sessions and lab marathons. Took the campus to the Tier 2 milestone with 60 participants who completed the program.</li></ul>
+        </div>
+      </div>
+      <div class="entry">
+        <div class="when">Mar 2025 – now</div>
+        <div>
+          <h3>Google Cloud Arcade Facilitator</h3>
+          <p class="where">Google Cloud Arcade Facilitator Program · Remote</p>
+          <ul><li>Mentor participants from any college or background through hands-on Google Cloud labs and skill badges.</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="timeline">
+      <h2>Timeline</h2>
+      <div class="timeline"><span class="ink" aria-hidden="true"></span><ol>
+        <li class="yr"><span class="y">2019</span><span class="dot"></span><span class="t"><b>Secondary school (SSC)</b>, Chandresh Lodha Memorial School, Mumbai <span>· 85.20%</span></span></li>
+        <li class="yr"><span class="y">2021</span><span class="dot"></span><span class="t"><b>Higher secondary (HSC)</b>, Pragati College <span>· 87.50%</span></span></li>
+        <li><span class="y"></span><span class="dot"></span><span class="t"><b>Started B.E.</b> in Computer Science and Engineering (IoT and Cyber Security), SIES GST</span></li>
+        <li class="yr"><span class="y">2022</span><span class="dot"></span><span class="t">Indigo Squad member, <b>Mood Indigo</b>, IIT Bombay <span>· Jul 2022 – Aug 2023</span></span></li>
+        <li class="yr"><span class="y">2023</span><span class="dot"></span><span class="t"><b>Surveillance drone prototype</b> <span>· Semester IV team project</span></span></li>
+        <li><span class="y"></span><span class="dot"></span><span class="t"><b>Became Cloud Computing Lead</b>, Google Developer Student Clubs <span>· August</span></span></li>
+        <li><span class="y"></span><span class="dot"></span><span class="t">Smart India Hackathon participant <span>· Google Cloud Platform Fundamentals</span></span></li>
+        <li class="yr"><span class="y">2024</span><span class="dot"></span><span class="t">Self-hosted collaboration platform (Mattermost) on AWS</span></li>
+        <li><span class="y"></span><span class="dot"></span><span class="t"><b>Cloud Infrastructure Trainee</b>, Serendib Trading and Properties <span>· Feb – May</span></span></li>
+        <li><span class="y"></span><span class="dot"></span><span class="t">Serverless and CI/CD projects on AWS <span>· Google Solution Challenge · Smart India Hackathon</span></span></li>
+        <li><span class="y"></span><span class="dot"></span><span class="t">Blockchain security model <span>· Semester VI mini project</span></span></li>
+        <li><span class="y"></span><span class="dot"></span><span class="t">Facilitator, Google Cloud <b>GenAI Study Jams</b> <span>· campus reached Tier 2</span></span></li>
+        <li><span class="y"></span><span class="dot"></span><span class="t">Cloud Lead continues under <b>GDG on Campus</b> <span>· October</span></span></li>
+        <li class="yr"><span class="y">2025</span><span class="dot"></span><span class="t">Became a <b>Google Cloud Arcade Facilitator</b> <span>· March</span></span></li>
+        <li><span class="y"></span><span class="dot"></span><span class="t"><b>CyberStorm</b> capture-the-flag platform for a campus security event</span></li>
+        <li><span class="y"></span><span class="dot"></span><span class="t">Final-year project: VR-based solution for Autism Spectrum Disorder</span></li>
+        <li><span class="y"></span><span class="dot"></span><span class="t"><b>Graduated</b>, B.E. CSE <span>· CGPI 7.89/10 · June</span></span></li>
+        <li><span class="y"></span><span class="dot"></span><span class="t">Freelance: SearchHR multi-tenant platform on AWS <span>· Jun – Aug</span></span></li>
+        <li><span class="y"></span><span class="dot"></span><span class="t"><b>Joined Capgemini</b> as Analyst <span>· September</span></span></li>
+        <li class="yr"><span class="y">2026</span><span class="dot"></span><span class="t">Microsoft Azure Fundamentals (AZ-900) <span>· Capgemini OCEAN L1, Python Scripting</span></span></li>
+        <li><span class="y"></span><span class="dot"></span><span class="t">Claude Certified Architect – Foundations, Anthropic <span>· August</span></span></li>
+        <li><span class="y"></span><span class="dot"></span><span class="t">Started research study on security of <b>AI-agent-written infrastructure code</b> <span>· November</span></span></li>
+        <li class="yr now"><span class="y">2027</span><span class="dot"></span><span class="t"><b>Applying to Ph.D. programs</b> in Computer Science for Fall 2027</span></li>
+      </ol></div>
+    </section>
+
+    <section id="cv">
+      <h2>Curriculum vitae</h2>
+      <div class="cvbox">
+        <a class="btn" href="assets/Abhishek_Tiwari_Academic_CV.pdf"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Download CV (PDF)</a>
+        <span class="muted">Updated November 2026</span>
+      </div>
+    </section>
+
+    <footer>© 2026 Abhishek Sunil Tiwari · Mumbai, India</footer>
+  </main>
+</div>
+<script>
+(function(){
+  var tl=document.querySelector('.timeline'), ink=tl&&tl.querySelector('.ink'), items=tl?[].slice.call(tl.querySelectorAll('li')):[];
+  var links=[].slice.call(document.querySelectorAll('nav.toc a')), secs=links.map(function(a){return document.querySelector(a.getAttribute('href'))});
+  function tick(){
+    if(tl){
+      var r=tl.getBoundingClientRect(), mid=innerHeight*0.62;
+      var p=Math.max(0,Math.min(1,(mid-r.top)/r.height)); ink.style.setProperty('--p',p.toFixed(4));
+      items.forEach(function(li){ li.classList.toggle('lit', li.getBoundingClientRect().top+16 < mid); });
+    }
+    var cur=0; secs.forEach(function(s,i){ if(s && s.getBoundingClientRect().top < innerHeight*0.35) cur=i; });
+    links.forEach(function(a,i){ a.classList.toggle('on', i===cur); });
+  }
+  addEventListener('scroll',tick,{passive:true}); addEventListener('resize',tick); tick();
+})();
+</script>
+</body>
+</html>
