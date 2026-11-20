@@ -2,6 +2,7 @@
   --blue: #2a4bff;
   --blue-deep: #1b33c9;
   --lime: #c8f26a;
+  --badge: #b7de57;
   --ink: #0d0f14;
   --ink-2: #171a22;
   --paper: #f2f3ef;
@@ -76,7 +77,7 @@ a:hover .ico { transform: translate(2px, -2px); }
 .drag-hint { position: absolute; right: 0; bottom: 0; font-family: var(--mono); font-size: 12px; color: rgba(255, 255, 255, .7); }
 .badge-static { position: absolute; inset: 0; display: grid; place-items: center; padding-top: 40px; }
 .badge-strap { position: absolute; top: -110px; left: 50%; width: 46px; height: calc(50% + 40px); transform: translateX(-50%); background: repeating-linear-gradient(180deg, var(--ink) 0 22px, #1d2130 22px 44px); }
-.badge-card { position: relative; width: min(300px, 70vw); aspect-ratio: 1.6 / 2.25; background: var(--lime); color: var(--ink); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 30px 60px -24px rgba(13, 15, 20, .6); transform: rotate(-4deg); animation: sway 5s ease-in-out infinite; transform-origin: 50% -40%; }
+.badge-card { position: relative; width: min(300px, 70vw); aspect-ratio: 1.6 / 2.25; background: var(--badge); color: var(--ink); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 30px 60px -24px rgba(13, 15, 20, .6); transform: rotate(-4deg); animation: sway 5s ease-in-out infinite; transform-origin: 50% -40%; }
 @keyframes sway { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(3deg); } }
 .badge-top { width: 100%; background: var(--ink); color: var(--lime); padding: 16px 18px 12px; text-align: left; font-family: var(--mono); font-size: 12px; line-height: 1.4; }
 .badge-top b { display: block; font-size: 15px; }
@@ -84,7 +85,7 @@ a:hover .ico { transform: translate(2px, -2px); }
 .badge-card img { width: 44%; height: auto; aspect-ratio: 1; border-radius: 50%; object-fit: cover; margin: 22px 0 14px; outline: 4px solid var(--ink); }
 .badge-card strong { font-family: var(--display); font-size: clamp(26px, 6vw, 34px); line-height: .95; letter-spacing: -.03em; }
 .badge-card em { font-style: normal; font-size: 13px; margin-top: 8px; }
-.badge-foot { margin-top: auto; width: 100%; background: var(--blue); color: #fff; font-family: var(--mono); font-size: 12px; padding: 12px; }
+.badge-foot { margin-top: auto; width: 100%; background: var(--ink); color: var(--badge); font-family: var(--mono); font-size: 12px; padding: 12px; }
 
 /* ---------- ticker ---------- */
 .ticker { background: var(--lime); color: var(--ink); overflow: hidden; border-block: 2px solid var(--ink); }

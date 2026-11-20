@@ -10,7 +10,7 @@ import { MeshLineGeometry, MeshLineMaterial } from 'meshline';
 extend({ MeshLineGeometry, MeshLineMaterial });
 
 const BLUE = '#2a4bff';
-const LIME = '#c8f26a';
+const LIME = '#b7de57';
 const INK = '#0d0f14';
 
 function roundRect(ctx, x, y, w, h, r) {
@@ -40,9 +40,9 @@ function useBadgeTextures(photoUrl) {
       // header band
       c.fillStyle = INK; c.fillRect(0, 0, W, 150);
       c.fillStyle = LIME; c.font = '600 34px "Geist Mono", monospace';
-      c.fillText('PHD APPLICANT', 48, 70);
+      c.fillText('CLOUD · DEVOPS · SECURITY', 48, 70);
       c.fillStyle = '#ffffff'; c.font = '400 26px "Geist Mono", monospace';
-      c.fillText('FALL 2027 · COMPUTER SCIENCE', 48, 112);
+      c.fillText('MUMBAI, INDIA', 48, 112);
       // slot hole
       c.fillStyle = LIME; roundRect(c, W / 2 - 60, 22, 120, 22, 11); c.fill();
       // photo
@@ -58,8 +58,8 @@ function useBadgeTextures(photoUrl) {
       c.font = '500 30px "Geist", sans-serif';
       c.fillText('Cloud & edge systems security', W / 2, 742);
       // footer
-      c.fillStyle = BLUE; c.fillRect(0, 790, W, 110);
-      c.fillStyle = '#ffffff'; c.font = '500 28px "Geist Mono", monospace';
+      c.fillStyle = INK; c.fillRect(0, 790, W, 110);
+      c.fillStyle = LIME; c.font = '500 28px "Geist Mono", monospace';
       c.fillText('abhishek572003.github.io', W / 2, 856);
 
       const back = document.createElement('canvas');
@@ -80,7 +80,7 @@ function useBadgeTextures(photoUrl) {
       const d = band.getContext('2d');
       d.fillStyle = INK; d.fillRect(0, 0, 1024, 64);
       d.fillStyle = LIME; d.font = '600 30px "Geist Mono", monospace'; d.textBaseline = 'middle';
-      d.fillText('ABHISHEK TIWARI  ✳  CLOUD · SECURITY · PHD 2027  ✳', 16, 34);
+      d.fillText('ABHISHEK TIWARI  ✳  CLOUD · DEVOPS · SECURITY  ✳', 16, 34);
 
       const mk = (cv) => { const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t; };
       const bandTex = mk(band); bandTex.wrapS = bandTex.wrapT = THREE.RepeatWrapping;
@@ -91,7 +91,8 @@ function useBadgeTextures(photoUrl) {
   return tex;
 }
 
-function Band({ tex }) {
+function Band({ tex, onSettled }) {
+  const frames = useRef(0);
   const band = useRef(), fixed = useRef(), j1 = useRef(), j2 = useRef(), j3 = useRef(), card = useRef();
   const vec = useMemo(() => new THREE.Vector3(), []);
   const ang = useMemo(() => new THREE.Vector3(), []);
@@ -115,6 +116,7 @@ function Band({ tex }) {
   }, [hovered, dragged]);
 
   useFrame((state, delta) => {
+    if (frames.current < 90 && ++frames.current === 90) onSettled?.();
     if (dragged) {
       vec.set(state.pointer.x, state.pointer.y, 0.5).unproject(state.camera);
       dir.copy(vec).sub(state.camera.position).normalize();
@@ -158,15 +160,15 @@ function Band({ tex }) {
           >
             <mesh>
               <boxGeometry args={[1.6, 2.25, 0.02]} />
-              <meshPhysicalMaterial color={LIME} clearcoat={1} clearcoatRoughness={0.2} roughness={0.5} />
+              <meshStandardMaterial color={LIME} roughness={0.7} />
             </mesh>
             <mesh position={[0, 0, 0.011]}>
               <planeGeometry args={[1.6, 2.25]} />
-              <meshPhysicalMaterial map={tex.front} toneMapped={false} clearcoat={0.6} clearcoatRoughness={0.25} roughness={0.55} envMapIntensity={0.35} />
+              <meshBasicMaterial map={tex.front} toneMapped={false} />
             </mesh>
             <mesh position={[0, 0, -0.011]} rotation={[0, Math.PI, 0]}>
               <planeGeometry args={[1.6, 2.25]} />
-              <meshPhysicalMaterial map={tex.back} toneMapped={false} clearcoat={0.6} clearcoatRoughness={0.25} roughness={0.55} envMapIntensity={0.35} />
+              <meshBasicMaterial map={tex.back} toneMapped={false} />
             </mesh>
             <mesh position={[0, 1.22, 0]}>
               <boxGeometry args={[0.28, 0.16, 0.06]} />
@@ -185,13 +187,13 @@ function Band({ tex }) {
 
 export default function Lanyard({ photo, onReady }) {
   const tex = useBadgeTextures(photo);
-  useEffect(() => { if (!tex) return; const t = setTimeout(() => onReady?.(), 1400); return () => clearTimeout(t); }, [tex, onReady]);
+  
   return (
     <Canvas camera={{ position: [0, 0, 13], fov: 25 }} gl={{ alpha: true, antialias: true }} dpr={[1, 2]} style={{ background: 'transparent' }}>
-      <ambientLight intensity={Math.PI} />
+      <ambientLight intensity={1.1} />
       {tex && (
         <Physics interpolate gravity={[0, -40, 0]} timeStep={1 / 60}>
-          <Band tex={tex} />
+          <Band tex={tex} onSettled={onReady} />
         </Physics>
       )}
       <Environment blur={0.75}>

@@ -22,7 +22,7 @@ function StaticBadge() {
     <div className="badge-static" aria-hidden="true">
       <span className="badge-strap" />
       <div className="badge-card">
-        <div className="badge-top"><b>PHD APPLICANT</b><span>FALL 2027 · COMPUTER SCIENCE</span></div>
+        <div className="badge-top"><b>CLOUD · DEVOPS · SECURITY</b><span>MUMBAI, INDIA</span></div>
         <img src={person.photo} alt="" width="160" height="160" />
         <strong>Abhishek<br />Tiwari</strong>
         <em>Cloud &amp; edge systems security</em>
@@ -98,7 +98,9 @@ export default function App() {
       }));
     }
 
-    const ctx = gsap.context(() => {
+    let ctx = { revert() {} };
+    let alive = true;
+    (document.fonts?.ready || Promise.resolve()).then(() => { if (!alive) return; ctx = gsap.context(() => {
       // header changes contrast to match the band underneath
       document.querySelectorAll('[data-theme]').forEach((sec) => {
         ScrollTrigger.create({
@@ -126,7 +128,7 @@ export default function App() {
       gsap.utils.toArray('.card-media img').forEach((img) => gsap.fromTo(img, { yPercent: -6 }, { yPercent: 6, ease: 'none', scrollTrigger: { trigger: img, scrub: true } }));
       gsap.from('.polaroid', { y: 80, opacity: 0, duration: 1.2, ease: 'expo.out', stagger: 0.12, scrollTrigger: { trigger: '.polaroids', start: 'top 85%' } });
       gsap.from('.j-item', { y: 30, opacity: 0, duration: 0.9, ease: 'expo.out', stagger: 0.07, scrollTrigger: { trigger: '.journey-list', start: 'top 85%' } });
-    }, root);
+    }, root); ScrollTrigger.refresh(); });
 
     // magnetic buttons
     const mags = [...document.querySelectorAll('.magnet')];
@@ -137,7 +139,7 @@ export default function App() {
     });
     if (!reduced) window.addEventListener('pointermove', onMove, { passive: true });
 
-    return () => { ctx.revert(); lenis?.destroy(); window.removeEventListener('pointermove', onMove); };
+    return () => { alive = false; ctx.revert(); lenis?.destroy(); window.removeEventListener('pointermove', onMove); };
   }, []);
 
   return (
@@ -340,7 +342,7 @@ export default function App() {
         {/* CONTACT */}
         <section className="contact" id="contact" data-theme="ink">
           <div className="contact-inner">
-          <p className="chip chip-dark"><span className="live" aria-hidden="true" />Open to Ph.D. positions and cloud / security roles</p>
+          <p className="chip chip-dark"><span className="live" aria-hidden="true" />Open to research positions and cloud / security roles</p>
           <h2 className="contact-title big-title">Let’s talk.</h2>
           <a className="contact-mail magnet" href={`mailto:${person.email}`}>{person.email}</a>
           <div className="contact-links">

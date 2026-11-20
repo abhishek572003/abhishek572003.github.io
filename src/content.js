@@ -10,10 +10,10 @@ export const person = {
   linkedin: 'https://www.linkedin.com/in/abhishek-tiwari05/',
   photo: 'assets/abhishek.jpg',
   location: 'Mumbai, India',
-  status: 'Applying for a Ph.D. in Computer Science · Fall 2027',
+  status: 'Open to research and engineering roles',
   headline: ['I build cloud', 'infrastructure,', 'and I want to know', 'how it breaks.'],
   intro:
-    'Cloud and DevOps engineer, community teacher and builder from Mumbai. I have shipped AWS platforms, taught 200+ students how the cloud works, and built two live learning products. Next: a Ph.D. on the security of cloud and edge systems.',
+    'Cloud and DevOps engineer, community teacher and builder from Mumbai. I have shipped AWS platforms, taught 200+ students how the cloud works, and built two live learning products. Now I am digging into how cloud and edge systems fail, and how to secure them.',
 };
 
 export const ticker = ['AWS', 'Kubernetes', 'Terraform', 'Docker', 'Linux', 'Python', 'Google Cloud', 'Azure', 'Jenkins', 'GitHub Actions', 'IAM', 'CI/CD', 'IoT', 'Security'];
@@ -130,5 +130,5 @@ export const journey = [
   ['2024', 'Cloud internship · VR hackathon · GenAI Study Jams facilitator'],
   ['2025', 'Graduated · Arcade Facilitator · CyberStorm CTF · joined Capgemini'],
   ['2026', 'Shipped KultKloud and CheatCode · started my first research study'],
-  ['2027', 'Ph.D. in Computer Science, if you will have me'],
+  ['2027', 'Next: deeper research in cloud and edge security'],
 ];
